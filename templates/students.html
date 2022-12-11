@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+</head>
+<body>
+
+<table>
+{% for student in students %}
+    <tr>
+        <th>{{students[student]['name']}}</th>
+        <th>{{students[student]['surname']}}</th>
+        <th>{{students[student]['group']}}</th>
+        <th>{{students[student]['courses']}}</th>
+    </tr>
+{% endfor %}
+    <tr>
+        <th></th>
+        <th><a href="/students.html/?page={{page-1}}">prev</a></th>
+        <th><a href="/students.html/?page={{page+1}}">next</a></th>
+        <th></th>
+    </tr>
+</table>
+
+</body>
+</html>

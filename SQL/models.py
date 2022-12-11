@@ -1,27 +1,18 @@
 
-__all__ = ['Student', 'Group', 'Course']
+__all__ = ['Student', 'Group', 'Course', 'Base', 'student_course']
 
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Table
-from sqlalchemy import Integer, String
-from sqlalchemy import ForeignKey
 
+from sqlalchemy import Integer, String, ForeignKey, Column, Table
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
-association_student_course = Table(
-    "association_student_course",
-    Base.metadata,
-    Column("student", ForeignKey("Students.id")),
-    Column("course", ForeignKey("Courses.id")),
-)
 
-association_student_group = Table(
-    "association_student_group",
+student_course = Table(
+    "student_course",
     Base.metadata,
-    Column("student", ForeignKey("Students.id")),
-    Column("group", ForeignKey("Groups.id")),
+    Column("student_id", Integer, ForeignKey("Students.id")),
+    Column("course_id", Integer, ForeignKey("Courses.id")),
 )
 
 
@@ -31,30 +22,31 @@ class Student(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     surname = Column(String, nullable=False)
-    group = relationship('Group', secondary=association_student_group)
-    courses = relationship('Course', secondary=association_student_course)
+
+    group = Column(Integer, ForeignKey('Groups.id'))
+
+    courses = relationship('Course', secondary=student_course)
 
     def __repr__(self):
-        return f"{self.id}: {self.name} {self.surname} {self.group} {self.courses}"
+        return f"{self.id}:{self.name}:{self.surname}:{self.group}:{self.courses}"
 
 
 class Group(Base):
     __tablename__ = 'Groups'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
 
     def __repr__(self):
-        return f"{self.id}: {self.name}"
+        return f"{self.name}"
 
 
 class Course(Base):
     __tablename__ = 'Courses'
 
     id = Column(Integer, primary_key=True)
-    course_name = Column(String, nullable=False)
+    course_name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
 
     def __repr__(self):
-        return f"{self.id}: {self.course_name}"
-
+        return f"{self.course_name}"

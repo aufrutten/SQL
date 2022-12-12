@@ -20,7 +20,7 @@ class Student(Resource):
                                'courses': list(map(str, student.courses))
                                })
 
-    def put(self):
+    def post(self):
         database = current_app.config.get('DATABASE')
         student = json.loads(request.data)
         try:
@@ -30,7 +30,8 @@ class Student(Resource):
             return json.dumps({'status_code': 404, 'message': str(exception)})
 
         else:
-            return json.dumps({'status_code': 200, 'message': f'student {student_model.id} has been added'})
+            return json.dumps({'status_code': 200, 'message': f'student {student_model.id} has been added',
+                               'id': student_model.id})
 
     def delete(self, _id):
         database = current_app.config.get('DATABASE')
@@ -41,7 +42,7 @@ class Student(Resource):
             return json.dumps({'status_code': 404, 'message': str(exception)})
 
         else:
-            return json.dumps({'status_code': 200, 'message': f'user {_id} has been deleted'})
+            return json.dumps({'status_code': 200, 'message': f'user {_id} has been deleted', 'id': _id})
 
     def patch(self, _id):
         database = current_app.config.get('DATABASE')
@@ -54,6 +55,34 @@ class Student(Resource):
 
         else:
             return json.dumps({'status_code': 200, 'message': f'user {_id} has been updated'})
+
+
+class StudentCourse(Resource):
+
+    def patch(self, _id):
+        database = current_app.config.get('DATABASE')
+        courses = json.loads(request.data)['courses']
+
+        try:
+            student = database.add_student_by_id_to_courses(_id, list(courses))
+        except IndexError as exception:
+            return json.dumps({'status_code': 404, 'message': str(exception)})
+        else:
+            return json.dumps({'status_code': 200,
+                               'message': f'user {_id} has been updated, courses:{student.courses}'})
+
+    def delete(self, _id):
+        database = current_app.config.get('DATABASE')
+        course = json.loads(request.data)['course']
+
+        try:
+            student = database.remove_student_from_course(_id, str(course))
+            print(student)
+        except IndexError as exception:
+            return json.dumps({'status_code': 404, 'message': str(exception)})
+        else:
+            return json.dumps({'status_code': 200,
+                               'message': f'user {_id} has been updated, courses:{student.courses}'})
 
 
 class Students(Resource):

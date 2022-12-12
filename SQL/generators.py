@@ -75,7 +75,7 @@ class GeneratePerson:
                 "courses": next(self.courses)}
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import time
     a = GeneratePerson()
     time_start = time.time()

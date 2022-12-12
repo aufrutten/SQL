@@ -9,6 +9,7 @@
 <table>
 {% for student in students %}
     <tr>
+        <th>{{student}}</th>
         <th>{{students[student]['name']}}</th>
         <th>{{students[student]['surname']}}</th>
         <th>{{students[student]['group']}}</th>
@@ -17,8 +18,9 @@
 {% endfor %}
     <tr>
         <th></th>
-        <th><a href="/students.html/?page={{page-1}}">prev</a></th>
-        <th><a href="/students.html/?page={{page+1}}">next</a></th>
+        <th></th>
+        <th><a href="/students/?page={{page-1}}">prev</a></th>
+        <th><a href="/students/?page={{page+1}}">next</a></th>
         <th></th>
     </tr>
 </table>

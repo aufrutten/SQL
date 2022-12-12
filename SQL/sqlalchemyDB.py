@@ -14,6 +14,26 @@ from . import generators
 # import generators
 
 
+def cache_result_students(func):
+    result = None
+    memory = None
+
+    def wrapper(self, *args, **kwargs):
+        nonlocal result, memory
+        if result is None:
+            memory = self._updates
+            result = func(self, *args, **kwargs)
+            return result
+
+        elif memory == self._updates:
+            return result
+        else:
+            memory = self._updates
+            result = func(self, *args, *kwargs)
+            return result
+    return wrapper
+
+
 class SQLTools:
 
     def __init__(self, user, password, host, port, path_db):
@@ -26,6 +46,8 @@ class SQLTools:
 
         self.engine = create_engine(url, echo=False, future=True)
         self.session = sessionmaker(bind=self.engine)()
+
+        self._updates = 0
 
     @lru_cache
     def get_course(self, course):
@@ -66,7 +88,8 @@ class SQLTools:
     def get_courses(self):
         return self.session.query(models.Course).all()
 
-    def get_students(self, count_in_the_page=3):
+    @cache_result_students
+    def get_students(self, count_in_the_page=30):
         students = self.session.query(models.Student).all()
         return [students[num:num + count_in_the_page] for num in range(0, len(students), count_in_the_page)]
 
@@ -88,12 +111,14 @@ class SQL(SQLTools):
         student = self.create_new_student(name, surname, group, courses)
         self.session.add(student)
         self.session.commit()
+        self._updates += 1
         return student
 
     def delete_student(self, _id: int):
         student = self.select_student(_id)
         self.session.delete(student)
         self.session.commit()
+        self._updates += 1
         return student
 
     def update_student(self, _id=None, name=None, surname=None, group=None, courses=[]):
@@ -106,6 +131,7 @@ class SQL(SQLTools):
 
         self.session.add(student)
         self.session.commit()
+        self._updates += 1
         return student
 
     def select_student(self, _id):
@@ -124,6 +150,7 @@ class SQL(SQLTools):
 
         self.session.add(student)
         self.session.commit()
+        self._updates += 1
         return student
 
     def remove_student_from_course(self, _id: int, course: str):
@@ -135,6 +162,7 @@ class SQL(SQLTools):
                 break
         self.session.add(student)
         self.session.commit()
+        self._updates += 1
         return student
 
     def get_students_by_course(self, course):
@@ -186,25 +214,4 @@ if __name__ == '__main__':  # pragma: no cover
                   'host': 'localhost',
                   'port': 5432,
                   'path_db': 'test_database'}
-    # import time
-    # start_time = time.time()
-    # CreateRecords(**postgresql, amount_of_students=1*10**3)
-    # print(time.time() - start_time)
-
     database = SQL(**postgresql)
-    for i in database.get_students():
-        print(i)
-    # print(database.get_students_by_course('C++'))
-    # print(database.find_less_group())
-    # database.insert_student('Ihor', 'Semy', 'ET_27', ['Python'])
-    # print(database.get_groups())
-
-    # print(database.remove_student_from_course(3, 'Python'))
-    # print(database.select_student(3))
-    # print(database.update_student(3, name='Ihor', surname='Semykopenko', group='UQ_26', courses=['Python']))
-    # print(database.select_student(3))
-    # print(database.find_less_group())
-
-    # for i in database.get_students():
-    #     print(list(map(str, i.courses)))
-

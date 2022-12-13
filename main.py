@@ -20,13 +20,9 @@ def create_app():
                                         'password': 'pass',
                                         'host': 'localhost',
                                         'port': 5432,
-                                        'path_db': 'test_database'}
-    app.config['DATABASE'] = SQL.SQL(**app.config.get('config_to_DATABASE'))
+                                        'path_db': 'main_database_test'}
+    app.config['DATABASE'] = SQL.create_connection_postgresql(**app.config.get('config_to_DATABASE'))
 
-    database = app.config.get('DATABASE')
-    courses, groups, students = len(database.get_courses()), len(database.get_groups()), len(database.get_students())
-    if courses == 0 and groups == 0 and students == 0:  # if database is empty
-        SQL.CreateRecords(**app.config.get('config_to_DATABASE'), amount_of_students=10**1)
     return app
 
 

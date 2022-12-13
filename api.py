@@ -4,11 +4,12 @@ import json
 
 
 class Student(Resource):
+    """insert/get/update/delete student"""
 
     def get(self, _id):
         database = current_app.config.get('DATABASE')
         try:
-            student = database.select_student(_id)
+            student = database.select_student(abs(int(_id)))
 
         except ValueError as exception:
             return json.dumps({'status_code': 404, 'message': str(exception)})
@@ -36,7 +37,7 @@ class Student(Resource):
     def delete(self, _id):
         database = current_app.config.get('DATABASE')
         try:
-            database.delete_student(_id)
+            database.delete_student(abs(int(_id)))
 
         except ValueError as exception:
             return json.dumps({'status_code': 404, 'message': str(exception)})
@@ -58,14 +59,15 @@ class Student(Resource):
 
 
 class StudentCourse(Resource):
+    """api for adding or removing student from course"""
 
     def patch(self, _id):
         database = current_app.config.get('DATABASE')
         courses = json.loads(request.data)['courses']
 
         try:
-            student = database.add_student_by_id_to_courses(_id, list(courses))
-        except IndexError as exception:
+            student = database.add_student_to_courses(_id, list(courses))
+        except ValueError as exception:
             return json.dumps({'status_code': 404, 'message': str(exception)})
         else:
             return json.dumps({'status_code': 200,
@@ -77,8 +79,7 @@ class StudentCourse(Resource):
 
         try:
             student = database.remove_student_from_course(_id, str(course))
-            print(student)
-        except IndexError as exception:
+        except ValueError as exception:
             return json.dumps({'status_code': 404, 'message': str(exception)})
         else:
             return json.dumps({'status_code': 200,
@@ -89,16 +90,13 @@ class Students(Resource):
 
     def get(self, page):
         database = current_app.config.get('DATABASE')
-        try:
-            list_students = database.get_students(count_in_the_page=20)[page-1]
-        except IndexError as exception:
-            return json.dumps({'status_code': 404, 'message': str(exception)})
-        else:
-            students = database.get_dict_students_from_list(list_students)
-            return json.dumps(students)
+        list_students = database.get_students()[abs(int(page))-1]
+        students = database.get_dict_students_from_list(list_students)
+        return json.dumps(students)
 
 
 class Course(Resource):
+    """class for getting student from the course"""
 
     def get(self, course):
         database = current_app.config.get('DATABASE')
@@ -121,5 +119,5 @@ class Tools(Resource):
             return json.dumps({'status_code': 404, 'message': 'command not found'})
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     pass

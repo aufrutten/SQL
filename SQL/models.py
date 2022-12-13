@@ -1,6 +1,5 @@
 
-__all__ = ['Student', 'Group', 'Course', 'Base', 'student_course']
-
+__all__ = ('Student', 'Group', 'Course', 'Base', 'student_course')
 
 from sqlalchemy import Integer, String, ForeignKey, Column, Table
 from sqlalchemy.orm import declarative_base, relationship

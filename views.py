@@ -1,4 +1,3 @@
-import json
 from flask import current_app, Blueprint, render_template, request
 
 
@@ -13,9 +12,9 @@ def student_page():
     page = int(request.values.get('page')) if request.values.get('page') else 0
     database = current_app.config.get('DATABASE')
     try:
-        student_list = database.get_students(count_in_the_page=50)[page]
-    except IndexError:
-        return render_template('404.html')
+        student_list = database.get_students()[page]
+    except IndexError as exception:
+        return render_template('404.html', message=str(exception))
     else:
         students = database.get_dict_students_from_list(student_list)
         return render_template('students.html', students=students, page=page)

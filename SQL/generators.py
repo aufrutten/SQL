@@ -1,5 +1,5 @@
 
-__all__ = ['GeneratePerson', 'courses']
+__all__ = ('GeneratePerson', 'courses')
 
 from random import choice, randint
 import requests
@@ -22,6 +22,7 @@ courses = (
 
 
 def get_random_courses():
+    """getting courses in randomly variation"""
     while True:
         amount_of_course = randint(1, 3)
         courses_index = [choice(courses)[0] for _ in range(amount_of_course)]
@@ -29,6 +30,7 @@ def get_random_courses():
 
 
 def gen_name_of_groups():
+    """generation name for group 'XX_00'"""
     letters = [chr(letter) for letter in range(65, 91)]
     numbers = [num for num in range(0, 10)]
     result = "{}{}_{}{}"
@@ -37,6 +39,7 @@ def gen_name_of_groups():
 
 
 def generate_groups(amount=100):
+    """generate groups in amount"""
     name = gen_name_of_groups()
     return [next(name) for _ in range(amount)]
 

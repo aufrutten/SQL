@@ -1,5 +1,6 @@
 
 __all__ = ('create_connection_postgresql', 'create_temp_connection')
+
 from functools import lru_cache
 
 import sqlalchemy.exc
@@ -19,7 +20,7 @@ def create_connection_postgresql(user, password, host, port, path_db):
 
 def create_temp_connection():
     url = "sqlite:///:memory:"
-    session_data = CreateRecords(url, amount_of_students=2*10**2).session
+    session_data = CreateRecords(url, amount_of_students=1*10**2).session
     sql = SQL(url)
     sql.session = session_data
     return sql

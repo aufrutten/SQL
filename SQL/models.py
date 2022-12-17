@@ -29,6 +29,14 @@ class Student(Base):
     def __repr__(self):
         return f"{self.id}:{self.name}:{self.surname}:{self.group}:{self.courses}"
 
+    @property
+    def dict(self):
+        return {'id': self.id,
+                'name': self.name,
+                'surname': self.surname,
+                'group': self.group,
+                'courses': list(map(str, self.courses))}
+
 
 class Group(Base):
     __tablename__ = 'Groups'

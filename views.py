@@ -1,3 +1,6 @@
+
+__all__ = ('simple_page',)
+
 from flask import current_app, Blueprint, render_template, request
 
 

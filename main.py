@@ -16,6 +16,7 @@ def create_app():
 
     # <-----------SWAGGER-------------->
     app.config['swagger'] = Swagger(app)
+    app.config['swagger'].load_swagger_file('templates/swagger.yaml')
 
     # <-----------INIT_APP------------->
     app.config.from_mapping(
@@ -32,7 +33,7 @@ def create_app():
                                         'path_db': 'main_database_test1'}
     app.config['DATABASE'] = SQL.create_connection_postgresql(**app.config.get('config_to_DATABASE'))
 
-    # <-----------BluePrints----------->
+    # <-----------VIEWS---------------->
     app.register_blueprint(simple_page)
 
     # <-----------APIs----------------->

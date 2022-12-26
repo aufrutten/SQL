@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 0.0.1
+servers:
+- description: api for sqlalchemy
+  url: http://127.0.0.1:5000/api/v1
+paths:
+  /students:
+    get:
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: A JSON array of user names
+      summary: Returns a list of users.
+      x-accepts: application/json
+    put:
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: A JSON array of user names
+      summary: Returns a list of users.
+      x-accepts: application/json
+components:
+  schemas: {}
+
